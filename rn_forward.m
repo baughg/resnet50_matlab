@@ -1,5 +1,7 @@
+eps = 1.0000e-05;
+
 % input data
-input_filename = 'test/ILSVRC2017_test_00001917.jpg';
+input_filename = 'test/african_bush_elephant.jpg';
 input_image = imread(input_filename);
 
 input_image = uint8(input_image);
@@ -9,16 +11,12 @@ image(input_image); axis image; axis off; colormap(gray(256));
 input_image = double(input_image);
 input_image = imresize(input_image, [224 224], 'bilinear');
 
-eps = 1.0000e-05;
-% input_image = 255*ones(224,224,3);
 
 
 mean_image = squeeze(read_array('model/ResNet_mean.binaryproto.bin',224,224,3,1));
+% normalise image
 input_image = input_image - mean_image;
 
-% normalise image
-
-% input_image = input_image / 255;
 
 % read weights and biases
 conv1_w = read_array('model/conv1.0.bin',7,7,3,64);
@@ -104,9 +102,11 @@ res5b_out = elementwise_add_relu(res5a_out,res5a_scale5b_branch2c);
 res5b_scale5c_branch2c = resnet_branch( res5b_out , '5c','2', 512, 512, 2048, 3, conv_stride);
 res5c_out = elementwise_add_relu(res5b_out,res5b_scale5c_branch2c);
 
-
+% pool5
 res5c_pool5 = avg_pool_k( res5c_out,7 );
+% fc1000
 pool5_fc1000 = fully_connected( res5c_pool5, 1000, 'fc1000' );
+% prob
 pb = softmax(pool5_fc1000);
 [pb_s, indx_s] = sort(pb,'descend');
 
@@ -117,7 +117,6 @@ tline = fgetl(fid);
 while ischar(tline)
     imagenet_labels{line_no} = tline;
     line_no = line_no + 1;
-%     disp(tline)
     tline = fgetl(fid);
 end
 fclose(fid);
