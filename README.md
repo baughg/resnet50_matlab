@@ -1,4 +1,4 @@
-# Resnet50
+# ResNet-50
 This is a MATLAB implementation of the [ResNet-50](https://dgschwend.github.io/netscope/#/preset/resnet-50) inference CNN. 
 The script 'rn_forward.m' does a forward pass of this network. By default the input image is an African bush elephant and
 the script output is shown below:
