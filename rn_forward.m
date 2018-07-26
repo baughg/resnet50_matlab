@@ -8,10 +8,18 @@ input_image = uint8(input_image);
 figure(1);
 image(input_image); axis image; axis off; colormap(gray(256));
 
+
+% input_image = imresize(input_image, [224 224], 'bilinear');
+% r = input_image(:,:,1)';
+% g = input_image(:,:,2)';
+% b = input_image(:,:,3)';
+% fid = fopen('model/input_image.bin','wb');
+% fwrite(fid,r(:),'float32');
+% fwrite(fid,g(:),'float32');
+% fwrite(fid,b(:),'float32');
+% fclose(fid);
+input_image = squeeze(read_array('model/input_image.bin',224,224,3,1));
 input_image = double(input_image);
-input_image = imresize(input_image, [224 224], 'bilinear');
-
-
 
 mean_image = squeeze(read_array('model/ResNet_mean.binaryproto.bin',224,224,3,1));
 % normalise image
